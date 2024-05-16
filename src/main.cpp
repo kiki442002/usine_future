@@ -19,9 +19,9 @@
 #include "DFRobot_GDL.h"
 #include "DFRobot_Touch.h"
 
-#define TFT_DC 2
-#define TFT_CS 6
-#define TFT_RST 3
+#define TFT_DC D2
+#define TFT_CS D6
+#define TFT_RST D3
 
 /**
    @brief Constructor  When the touch uses the gt series chip, you can call this constructor
@@ -63,7 +63,7 @@ void btnCallback(DFRobot_UI::sButton_t &btn, DFRobot_UI::sTextBox_t &obj)
 void setup()
 {
 
-    Serial.begin(9600);
+    Serial.println("UI_button demo");
     // Initialize UI
     ui.begin();
     // Set the UI theme, there are two themes to choose from: CLASSIC and MODERN.
