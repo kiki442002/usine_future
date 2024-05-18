@@ -7,6 +7,7 @@
 #include "DFRobot_GDL.h"
 #include "DFRobot_Touch.h"
 #include "DFRobot_UI.h"
+#include "time.h"
 
 /* Pin definition */
 #define TFT_DC D2
@@ -14,14 +15,6 @@
 #define TFT_RST D3
 
 #define MAX_ALARM 5
-
-/* TimeClock structure */
-struct TimeClock
-{
-    int hours = 0;
-    int minutes = 0;
-    int secondes = 0;
-};
 
 /* AlarmClock structure */
 struct AlarmClock
@@ -33,8 +26,9 @@ struct AlarmClock
 };
 
 /* Global variables */
-extern volatile TimeClock time_clock;
+extern volatile tm time_clock;
 extern volatile bool alarm_ring;
+extern volatile bool update_time;
 extern volatile AlarmClock alarm_clock[MAX_ALARM]; // 5 alarmes possibles
 
 extern DFRobot_Touch_GT911 touch;
