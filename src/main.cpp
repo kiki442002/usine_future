@@ -9,20 +9,25 @@ DFRobot_ILI9488_320x480_HW_SPI screen(/*dc=*/TFT_DC, /*cs=*/TFT_CS, /*rst=*/TFT_
 DFRobot_UI ui(&screen, &touch);
 
 volatile tm time_clock;
+volatile AlarmEditState state = NO_EDIT;
 volatile bool alarm_ring = false;
-volatile AlarmClock alarm_clock[MAX_ALARM]; // 5 alarmes possibles
+// TODO: généraliser pour 5 alarmes
+volatile AlarmClock alarm_clock[MAX_ALARM]; // 5 alarmes possibles, seul la première utilisé pour l'instant
 
 volatile bool update_time = false;
 volatile bool clock_update = false;
 
 void setup()
 {
-    Serial.begin(115200);
-    Serial.println("Début programme");
-    /*Initialisation du wifi*/
-    WiFi.mode(WIFI_STA);
     WiFiManager wm;
     bool res;
+
+    Serial.begin(115200);
+    Serial.println("Début programme");
+
+    /*Initialisation du wifi*/
+    WiFi.mode(WIFI_STA);
+
     res = wm.autoConnect("Clock_AP_FALLBACK", "12345678");
     if (!res)
     {
@@ -72,7 +77,7 @@ void setup()
     configTime(3600 * 2, 1, "pool.ntp.org");
 
     getLocalTime((tm *)&time_clock, 10000);
-    Serial.println("Temps récupérer");
+    Serial.println("Temps récupéré");
 
     /*Initilisation du Timer pour l'horloge*/
     hw_timer_t *timer_clock = NULL;
@@ -80,9 +85,13 @@ void setup()
     timerAttachInterrupt(timer_clock, &Timer_Clock_IT, true); // Attache la fonction Timer_Clock_IT à notre timer
     timerAlarmWrite(timer_clock, 1000000, true);              // Déclenche l'interruption toutes les secondes
     timerAlarmEnable(timer_clock);                            // Active l'interruption
-    Serial.println("Setup Fini");
+    Serial.println("Setup NTP Fini");
 
-    /*Initialisation écran*/
+    // setup of rotating encoder
+    pinMode(CLK_ROTATIF, INPUT);
+    pinMode(DATA_ROTATIF, INPUT);
+    attachInterrupt(SW_ROTATIF, changeState, FALLING);
+    attachInterrupt(CLK_ROTATIF, rotatingInterrupt, CHANGE);
 }
 
 void loop()

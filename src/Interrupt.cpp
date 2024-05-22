@@ -77,3 +77,45 @@ void IRAM_ATTR Timer_Clock_IT(void)
     }
     clock_update = true;
 }
+
+void ARDUINO_ISR_ATTR rotatingInterrupt() {    //Interrupt processing function
+    if (digitalRead(CLK_ROTATIF) != digitalRead(DATA_ROTATIF)) 
+    { // Signale que A change avant B - la rotation est donc horaire
+        switch(state) {
+          case HOUR_EDIT :
+            alarm_clock[0].hours = (alarm_clock[0].hours + 1) % 24;
+            break;
+          case MINUTE_EDIT :
+            alarm_clock[0].minutes = (alarm_clock[0].minutes + 1) % 60;
+            break;
+        }
+    } 
+    else
+    {
+        // Sinon, c'est que B change avant A, la rotation est anti-horaire
+        switch(state) {
+          case HOUR_EDIT :
+            alarm_clock[0].hours = (alarm_clock[0].hours - 1) % 24;
+            break;
+          case MINUTE_EDIT :
+            alarm_clock[0].minutes = (alarm_clock[0].minutes - 1) % 60;
+        }
+    }
+  
+}
+
+void ARDUINO_ISR_ATTR changeState() {
+  // TODO: search for an improved way to do incremental on enum
+  // state = (AlarmEditState)(((int)state) + 1) % (((int)MINUTE_EDIT) + 1);
+  switch(state) {
+    case NO_EDIT :
+        state = HOUR_EDIT;
+        break;
+    case HOUR_EDIT :
+        state = MINUTE_EDIT;
+        break;
+    case MINUTE_EDIT :
+        state = NO_EDIT;
+        break; 
+  }
+}
