@@ -14,14 +14,16 @@
 #define TFT_CS D6
 #define TFT_RST D3
 
-#define MAX_ALARM 5
-
-// macro pin encodeur rotatif
+/* Pin definition for rotating encoder */
 #define CLK_ROTATIF D7 // clock event trigger when rotation made
-#define DATA_ROTATIF D6 // data to know clockwise or anti
-#define SW_ROTATIF D5 // switch button integrated
+// FIXME: conflicting declaration, D6 is forced by hardware to be used for GDI interface for screen
+#define DATA_ROTATIF D6 // data to know if rotation is clockwise or  not
+#define SW_ROTATIF D5 // switch button integrated to encoder
 
-// TODO: setup SW
+/* Pin definition for snooze button */
+#define SW_SNOOZE D11
+
+#define MAX_ALARM 5
 
 // used to know in which edit alarm mode we are
 enum AlarmEditState { NO_EDIT, HOUR_EDIT, MINUTE_EDIT };

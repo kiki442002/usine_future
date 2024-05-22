@@ -84,12 +84,17 @@ void setup()
     screen_init();
     Serial.println("Setup screen Fini");
 
-    // setup of rotating encoder
+    /* setup of rotating encoder */
     pinMode(CLK_ROTATIF, INPUT);
     pinMode(DATA_ROTATIF, INPUT);
     attachInterrupt(SW_ROTATIF, changeEditState, FALLING);
     attachInterrupt(CLK_ROTATIF, rotatingInterrupt, CHANGE);
     Serial.println("Setup Encodeur Fini");
+
+    /* setup of snoozing switch button */
+    pinMode(SW_SNOOZE, INPUT);
+    attachInterrupt(SW_SNOOZE, snoozeInterrupt, RISING);
+    Serial.println("Setup Snoozing Fini");
 
     /*Initilisation du Timer pour l'horloge*/
     hw_timer_t *timer_clock = NULL;
