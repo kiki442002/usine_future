@@ -1,6 +1,7 @@
 #include "main.h"
 #include "Interrupt.h"
 #include "WiFiManager.h"
+#include "ArduinoOTA.h"
 
 DFRobot_Touch_GT911 touch;
 DFRobot_ILI9488_320x480_HW_SPI screen(/*dc=*/TFT_DC, /*cs=*/TFT_CS, /*rst=*/TFT_RST);
@@ -34,6 +35,44 @@ void setup()
     }
     Serial.println("Wifi connecter");
 
+    /*MAJ OTA*/
+    ArduinoOTA.setHostname("clock"); // upload with clock.local
+    ArduinoOTA
+        .onStart([]()
+                 {
+      String type;
+      if (ArduinoOTA.getCommand() == U_FLASH) {
+        type = "sketch";
+      } else {  // U_SPIFFS
+        type = "filesystem";
+      }
+
+      // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
+      Serial.println("Start updating " + type); })
+        .onEnd([]()
+               { Serial.println("\nEnd"); })
+        .onProgress([](unsigned int progress, unsigned int total)
+                    { Serial.printf("Progress: %u%%\r", (progress / (total / 100))); })
+        .onError([](ota_error_t error)
+                 {
+      Serial.printf("Error[%u]: ", error);
+      if (error == OTA_AUTH_ERROR) {
+        Serial.println("Auth Failed");
+      } else if (error == OTA_BEGIN_ERROR) {
+        Serial.println("Begin Failed");
+      } else if (error == OTA_CONNECT_ERROR) {
+        Serial.println("Connect Failed");
+      } else if (error == OTA_RECEIVE_ERROR) {
+        Serial.println("Receive Failed");
+      } else if (error == OTA_END_ERROR) {
+        Serial.println("End Failed");
+      } });
+    ArduinoOTA.begin();
+
+    Serial.println("Maj OTA configuré");
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
+
     configTime(3600 * 2, 1, "pool.ntp.org");
 
     getLocalTime((tm *)&time_clock, 10000);
@@ -65,18 +104,19 @@ void loop()
         // sonner le réveil
     }
 
-    ui.refresh(); // Rafraichir l'écran
-
     if (update_time)
     {
         getLocalTime((tm *)&time_clock, 10000);
+        ui.refresh(); // Rafraichir l'écran
         update_time = false;
     }
 
     if (clock_update)
     {
-        Serial.println("Heure : " + String(time_clock.tm_hour) + " Minutes : " + String(time_clock.tm_min) + " Secondes : " + String(time_clock.tm_sec));
-        Serial.println("Jour : " + String(time_clock.tm_mday) + " Mois : " + String(time_clock.tm_mon) + " Année : " + String(time_clock.tm_year));
+        Serial.println((tm *)&time_clock, "%A, %B %d %Y %H:%M:%S");
+        ui.refresh(); // Rafraichir l'écran
         clock_update = false;
     }
+
+    ArduinoOTA.handle(); // OTA
 }
