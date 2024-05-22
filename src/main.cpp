@@ -52,18 +52,17 @@ void loop()
         // sonner le réveil
     }
 
-    ui.refresh(); // Rafraichir l'écran
-
     if (update_time)
     {
         getLocalTime((tm *)&time_clock, 10000);
+        ui.refresh(); // Rafraichir l'écran
         update_time = false;
     }
 
     if (clock_update)
     {
-        Serial.println("Heure : " + String(time_clock.tm_hour) + " Minutes : " + String(time_clock.tm_min) + " Secondes : " + String(time_clock.tm_sec));
-        Serial.println("Jour : " + String(time_clock.tm_mday) + " Mois : " + String(time_clock.tm_mon) + " Année : " + String(time_clock.tm_year));
+        Serial.println((tm *)&time_clock, "%A, %B %d %Y %H:%M:%S");
+        ui.refresh(); // Rafraichir l'écran
         clock_update = false;
     }
 }
