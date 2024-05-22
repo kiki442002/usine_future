@@ -2,6 +2,7 @@
 #include "Interrupt.h"
 #include "WiFiManager.h"
 #include "ArduinoOTA.h"
+#include "Screen.h"
 
 DFRobot_Touch_GT911 touch;
 DFRobot_ILI9488_320x480_HW_SPI screen(/*dc=*/TFT_DC, /*cs=*/TFT_CS, /*rst=*/TFT_RST);
@@ -80,6 +81,8 @@ void setup()
     timerAlarmWrite(timer_clock, 1000000, true);              // Déclenche l'interruption toutes les secondes
     timerAlarmEnable(timer_clock);                            // Active l'interruption
     Serial.println("Setup Fini");
+
+    /*Initialisation écran*/
 }
 
 void loop()
@@ -95,14 +98,14 @@ void loop()
     if (update_time)
     {
         getLocalTime((tm *)&time_clock, 10000);
-        ui.refresh(); // Rafraichir l'écran
+        screen_updateTime();
         update_time = false;
     }
 
     if (clock_update)
     {
         Serial.println((tm *)&time_clock, "%A, %B %d %Y %H:%M:%S");
-        ui.refresh(); // Rafraichir l'écran
+        screen_updateTime();
         clock_update = false;
     }
 
