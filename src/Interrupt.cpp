@@ -75,4 +75,5 @@ void IRAM_ATTR Timer_Clock_IT(void)
             }
         }
     }
+    clock_update = true;
 }

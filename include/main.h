@@ -29,6 +29,7 @@ struct AlarmClock
 extern volatile tm time_clock;
 extern volatile bool alarm_ring;
 extern volatile bool update_time;
+extern volatile bool clock_update;
 extern volatile AlarmClock alarm_clock[MAX_ALARM]; // 5 alarmes possibles
 
 extern DFRobot_Touch_GT911 touch;
