@@ -90,7 +90,7 @@ void setup()
     // setup of rotating encoder
     pinMode(CLK_ROTATIF, INPUT);
     pinMode(DATA_ROTATIF, INPUT);
-    attachInterrupt(SW_ROTATIF, changeState, FALLING);
+    attachInterrupt(SW_ROTATIF, changeEditState, FALLING);
     attachInterrupt(CLK_ROTATIF, rotatingInterrupt, CHANGE);
 }
 
@@ -99,9 +99,11 @@ void loop()
 
     if (alarm_ring)
     {
-
         Serial.println("Réveil Sonne");
-        // sonner le réveil
+        // TODO: sonner le réveil
+    } else
+    {
+        // TODO: disable buzzer
     }
 
     if (update_time)

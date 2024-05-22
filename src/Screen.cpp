@@ -18,4 +18,6 @@ void screen_updateTime()
     screen.print((tm *)&time_clock, "%A, %B %d %Y \n %H:%M:%S");
 }
 
-void screen_indicate_alarm()
+void screen_indicate_alarm() {
+    return;
+}

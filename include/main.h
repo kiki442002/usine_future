@@ -21,6 +21,8 @@
 #define DATA_ROTATIF D6 // data to know clockwise or anti
 #define SW_ROTATIF D5 // switch button integrated
 
+// TODO: setup SW
+
 // used to know in which edit alarm mode we are
 enum AlarmEditState { NO_EDIT, HOUR_EDIT, MINUTE_EDIT };
 
