@@ -20,6 +20,7 @@ volatile bool clock_update = false;
 void setup()
 {
     WiFiManager wm;
+    wm.resetSettings();
     bool res;
 
     Serial.begin(115200);
@@ -29,11 +30,11 @@ void setup()
     WiFi.mode(WIFI_STA);
 
     res = wm.autoConnect("Clock_AP_FALLBACK", "12345678");
-    if (!res)
+    while (!res)
     {
-        Serial.println("Failed to connect");
-        ESP.restart();
+        Serial.print(".");
     }
+    Serial.println();
     Serial.println("Wifi connecter");
 
     /*MAJ OTA*/
@@ -79,6 +80,17 @@ void setup()
     getLocalTime((tm *)&time_clock, 10000);
     Serial.println("Temps récupéré");
 
+    /*Screen Initialisation*/
+    screen_init();
+    Serial.println("Setup screen Fini");
+
+    // setup of rotating encoder
+    pinMode(CLK_ROTATIF, INPUT);
+    pinMode(DATA_ROTATIF, INPUT);
+    attachInterrupt(SW_ROTATIF, changeState, FALLING);
+    attachInterrupt(CLK_ROTATIF, rotatingInterrupt, CHANGE);
+    Serial.println("Setup Encodeur Fini");
+
     /*Initilisation du Timer pour l'horloge*/
     hw_timer_t *timer_clock = NULL;
     timer_clock = timerBegin(0, 80, true);                    // Initialise le timer 0, diviseur 80 (donc fréquence de 1MHz), comptage ascendant
@@ -86,12 +98,6 @@ void setup()
     timerAlarmWrite(timer_clock, 1000000, true);              // Déclenche l'interruption toutes les secondes
     timerAlarmEnable(timer_clock);                            // Active l'interruption
     Serial.println("Setup NTP Fini");
-
-    // setup of rotating encoder
-    pinMode(CLK_ROTATIF, INPUT);
-    pinMode(DATA_ROTATIF, INPUT);
-    attachInterrupt(SW_ROTATIF, changeState, FALLING);
-    attachInterrupt(CLK_ROTATIF, rotatingInterrupt, CHANGE);
 }
 
 void loop()
@@ -117,6 +123,5 @@ void loop()
         screen_updateTime();
         clock_update = false;
     }
-
     ArduinoOTA.handle(); // OTA
 }
