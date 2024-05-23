@@ -15,13 +15,15 @@
 #define TFT_RST D3
 
 /* Pin definition for rotating encoder */
-#define CLK_ROTATIF D7 // clock event trigger when rotation made
-// FIXME: conflicting declaration, D6 is forced by hardware to be used for GDI interface for screen
-#define DATA_ROTATIF D6 // data to know if rotation is clockwise or  not
+#define CLK_ROTATIF D9 // clock event trigger when rotation made
+#define DATA_ROTATIF D7 // data to know if rotation is clockwise or  not
 #define SW_ROTATIF D5 // switch button integrated to encoder
 
 /* Pin definition for snooze button */
-#define SW_SNOOZE D11
+#define SW_SNOOZE D10
+
+/* Pin definition for buzzer button */
+#define BUZZER_OUT D13
 
 #define MAX_ALARM 5
 

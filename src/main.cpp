@@ -92,8 +92,8 @@ void setup()
     Serial.println("Setup Encodeur Fini");
 
     /* setup of snoozing switch button */
-    pinMode(SW_SNOOZE, INPUT);
-    attachInterrupt(SW_SNOOZE, snoozeInterrupt, RISING);
+    pinMode(SW_SNOOZE, INPUT_PULLUP);
+    attachInterrupt(SW_SNOOZE, snoozeInterrupt, FALLING); // when button is pressed, SW_SNOOZE will be dropping to GND, so falling is first
     Serial.println("Setup Snoozing Fini");
 
     /*Initilisation du Timer pour l'horloge*/
