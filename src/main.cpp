@@ -111,10 +111,10 @@ void loop()
     if (alarm_ring)
     {
         Serial.println("Réveil Sonne");
-        // TODO: sonner le réveil
+        digitalWrite(BUZZER_OUT, HIGH);
     } else
     {
-        // TODO: disable buzzer
+        digitalWrite(BUZZER_OUT, LOW);
     }
 
     if (update_time)
