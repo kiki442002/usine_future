@@ -64,6 +64,8 @@ void screen_updateTime()
     screen.fillScreen(0x0000);
     screen.setCursor(X_CLOCK, Y_CLOCK);
     screen.print((tm *)&time_clock, "%A, %B %d %Y \n %H:%M:%S");
+    screen_active_alarm_icon(alarm_clock[0].active);
+    screen_repeat_alarm_icon(alarm_clock[0].repeat);
 }
 
 void screen_repeat_alarm_icon(bool set)
