@@ -96,6 +96,10 @@ void setup()
     attachInterrupt(SW_SNOOZE, snoozeInterrupt, FALLING); // when button is pressed, SW_SNOOZE will be dropping to GND, so falling is first
     Serial.println("Setup Snoozing Fini");
 
+    /* setup of buzzer */
+    pinMode(BUZZER_OUT, OUTPUT);
+    Serial.println("Setup Buzzer Fini");
+
     /*Initilisation du Timer pour l'horloge*/
     hw_timer_t *timer_clock = NULL;
     timer_clock = timerBegin(0, 80, true);                    // Initialise le timer 0, diviseur 80 (donc fréquence de 1MHz), comptage ascendant
