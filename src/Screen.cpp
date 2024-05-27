@@ -65,6 +65,13 @@ void screen_updateTime()
     screen.print((tm *)&time_clock, "%A, %B %d %Y \n %H:%M:%S");
 }
 
-void screen_indicate_alarm() {
-    return;
+void screen_repeat_alarm_icon(bool set)
+{
+    if (set)
+    {
+    }
+}
+void screen_active_alarm_icon(bool set)
+{
+    if (set)
 }

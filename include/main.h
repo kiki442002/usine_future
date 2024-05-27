@@ -15,9 +15,9 @@
 #define TFT_RST D3
 
 /* Pin definition for rotating encoder */
-#define CLK_ROTATIF D9 // clock event trigger when rotation made
+#define CLK_ROTATIF D9  // clock event trigger when rotation made
 #define DATA_ROTATIF D7 // data to know if rotation is clockwise or  not
-#define SW_ROTATIF D5 // switch button integrated to encoder
+#define SW_ROTATIF D5   // switch button integrated to encoder
 
 /* Pin definition for snooze button */
 #define SW_SNOOZE D10
@@ -28,13 +28,18 @@
 #define MAX_ALARM 5
 
 // used to know in which edit alarm mode we are
-enum AlarmEditState { NO_EDIT, HOUR_EDIT, MINUTE_EDIT };
+enum AlarmEditState
+{
+    NO_EDIT,
+    HOUR_EDIT,
+    MINUTE_EDIT
+};
 
 /* AlarmClock structure */
 struct AlarmClock
 {
-    int hours = 0;
-    int minutes = 0;
+    int hours = 12;
+    int minutes = 30;
     bool active = false;
     bool repeat = false;
 };
