@@ -78,61 +78,66 @@ void IRAM_ATTR Timer_Clock_IT(void)
     clock_update = true;
 }
 
-void ARDUINO_ISR_ATTR rotatingInterrupt() {    //Interrupt processing function
-    if (digitalRead(CLK_ROTATIF) != digitalRead(DATA_ROTATIF)) 
+void IRAM_ATTR rotatingInterrupt()
+{ // Interrupt processing function
+    if (digitalRead(CLK_ROTATIF) != digitalRead(DATA_ROTATIF))
     { // Signale que A change avant B - la rotation est donc horaire
-        switch(state) {
-          case HOUR_EDIT :
+        switch (state)
+        {
+        case HOUR_EDIT:
             alarm_clock[0].hours = (alarm_clock[0].hours + 1) % 24;
             break;
-          case MINUTE_EDIT :
+        case MINUTE_EDIT:
             alarm_clock[0].minutes = (alarm_clock[0].minutes + 1) % 60;
             break;
         }
-    } 
+    }
     else
     {
         // Sinon, c'est que B change avant A, la rotation est anti-horaire
-        switch(state) {
-          case HOUR_EDIT :
+        switch (state)
+        {
+        case HOUR_EDIT:
             alarm_clock[0].hours = (alarm_clock[0].hours - 1) % 24;
             break;
-          case MINUTE_EDIT :
+        case MINUTE_EDIT:
             alarm_clock[0].minutes = (alarm_clock[0].minutes - 1) % 60;
         }
     }
-  
 }
 
-void ARDUINO_ISR_ATTR changeEditState() {
-  // TODO: search for an improved way to do incremental on enum
-  // state = (AlarmEditState)(((int)state) + 1) % (((int)MINUTE_EDIT) + 1);
-  switch(state)
-  {
-        case NO_EDIT :
-            state = HOUR_EDIT;
-            break;
-        case HOUR_EDIT :
-            state = MINUTE_EDIT;
-            break;
-        case MINUTE_EDIT :
-            state = NO_EDIT;
-            break; 
+void IRAM_ATTR changeEditState()
+{
+    // TODO: search for an improved way to do incremental on enum
+    // state = (AlarmEditState)(((int)state) + 1) % (((int)MINUTE_EDIT) + 1);
+    switch (state)
+    {
+    case NO_EDIT:
+        state = HOUR_EDIT;
+        break;
+    case HOUR_EDIT:
+        state = MINUTE_EDIT;
+        break;
+    case MINUTE_EDIT:
+        state = NO_EDIT;
+        break;
     }
 }
 
-void ARDUINO_ISR_ATTR snoozeInterrupt(void) {
-    if(NO_EDIT == state)
+void IRAM_ATTR snoozeInterrupt(void)
+{
+    if (NO_EDIT == state)
     { // the snooze action either interrupt the ringing alarm or enable/disable programmed alarm
-        if(alarm_ring)
-        { // alarm is ringing, stop it
+        if (alarm_ring)
+        {                       // alarm is ringing, stop it
             alarm_ring = false; // stop alarm
         }
         else
         { // alarm is not ringing, enable / desable programmed alarm is asked
             alarm_clock[0].active = !alarm_clock[0].active;
         }
-    } else
+    }
+    else
     { // edition of alarm params, action is to set or not set repeat mode
         alarm_clock[0].repeat = !alarm_clock[0].repeat;
     }
