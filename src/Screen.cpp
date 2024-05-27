@@ -65,10 +65,45 @@ void screen_updateTime()
     screen.print((tm *)&time_clock, "%A, %B %d %Y \n %H:%M:%S");
 }
 
-void screen_indicate_alarm() {
-    return;
+void screen_repeat_alarm_icon(bool set)
+{
+    if (set)
+    {
+    }
+}
+void screen_active_alarm_icon(bool set)
+{
+    if (set) {}
 }
 
-void screen_edit_alarm() {
-    return;
+void screen_edit_alarm()
+{
+    screen.fillScreen(COLOR_RGB565_BLACK);
+    screen.setFont(&FreeMonoBold12pt7b);
+    screen.setTextSize(2);
+    screen.setTextColor(COLOR_RGB565_WHITE);
+
+    // print mode
+    screen.setCursor(10, 30);
+    screen.print("EDIT MODE");
+
+    // print alarm date
+    screen.setCursor(150, 130);
+    screen.setTextSize(3);
+    if(HOUR_EDIT == state) {
+        screen.setTextColor(COLOR_RGB565_YELLOW);
+    }
+    screen.print((unsigned long)alarm_clock[0].hours, 10);
+    screen.setTextColor(COLOR_RGB565_WHITE);
+    screen.print(':');
+    if(MINUTE_EDIT == state) {
+        screen.setTextColor(COLOR_RGB565_YELLOW);
+    }
+    screen.print((unsigned long)alarm_clock[0].minutes, 10);
+    screen.setTextColor(COLOR_RGB565_WHITE);
+
+    // print repeat icon
+    if(alarm_clock[0].repeat) {
+        screen_repeat_alarm_icon(true);
+    }
 }
