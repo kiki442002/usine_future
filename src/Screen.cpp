@@ -68,3 +68,7 @@ void screen_updateTime()
 void screen_indicate_alarm() {
     return;
 }
+
+void screen_edit_alarm() {
+    return;
+}

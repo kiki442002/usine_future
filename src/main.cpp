@@ -14,6 +14,7 @@ volatile bool alarm_ring = false;
 // TODO: généraliser pour 5 alarmes
 volatile AlarmClock alarm_clock[MAX_ALARM]; // 5 alarmes possibles, seul la première utilisé pour l'instant
 
+
 volatile bool update_time = false;
 volatile bool clock_update = false;
 
