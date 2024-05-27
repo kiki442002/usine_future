@@ -53,7 +53,7 @@ void screen_init()
     ui.setTheme(DFRobot_UI::MODERN);
 
     screen.begin();
-    screen.fillScreen(COLOR_RGB565_BLACK);
+    screen.fillScreen(0x0000);
     screen.setFont(&FreeMonoBold12pt7b);
     screen.setTextSize(3);
     screen.setTextColor(COLOR_RGB565_WHITE);
@@ -61,17 +61,23 @@ void screen_init()
 
 void screen_updateTime()
 {
-    screen.setCursor(10, 120);
+    screen.fillScreen(0x0000);
+    screen.setCursor(X_CLOCK, Y_CLOCK);
     screen.print((tm *)&time_clock, "%A, %B %d %Y \n %H:%M:%S");
 }
 
 void screen_repeat_alarm_icon(bool set)
 {
     if (set)
-    {
-    }
+        screen.drawXBitmap(X_REPEAT_ALARM, Y_REPEAT_ALARM, alarm_repeat_icon, 50, 50, 0x000);
+
+    else
+        screen.fillRect(X_REPEAT_ALARM, Y_REPEAT_ALARM, 50, 50, 0x0000);
 }
 void screen_active_alarm_icon(bool set)
 {
     if (set)
+        screen.drawXBitmap(X_REPEAT_ALARM, Y_REPEAT_ALARM, alarm_active_icon, 50, 50, 0X000);
+    else
+        screen.fillRect(X_ACTIVE_ALARM, Y_ACTIVE_ALARM, 50, 50, 0x0000);
 }

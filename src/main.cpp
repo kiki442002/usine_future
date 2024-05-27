@@ -111,6 +111,9 @@ void setup()
   timerAlarmWrite(timer_clock, 1000000, true);              // Déclenche l'interruption toutes les secondes
   timerAlarmEnable(timer_clock);                            // Active l'interruption
   Serial.println("Setup NTP Fini");
+
+  // corriger le fichier: anyrtttl.cpp avec DelayFuncPtr _delay = (void (*)(long unsigned int))(&delay);
+  anyrtttl::nonblocking::begin(BUZZER_OUT, tetris_melody_alarm);
 }
 
 void loop()
@@ -118,13 +121,8 @@ void loop()
 
   if (alarm_ring)
   {
-    if (!anyrtttl::nonblocking::isPlaying())
-    {
-      Serial.println("Réveil Sonne");
-      anyrtttl::nonblocking::beginProgMem(BUZZER_OUT, tetris_melody_alarm);
-    }
-    else
-      anyrtttl::nonblocking::play();
+    Serial.println("Réveil Sonne");
+    anyrtttl::nonblocking::play();
   }
   else
     anyrtttl::nonblocking::stop();

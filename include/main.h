@@ -25,7 +25,18 @@
 /* Pin definition for buzzer button */
 #define BUZZER_OUT D13
 
+/* Number max of alarm */
 #define MAX_ALARM 5
+
+/* Screen coordinate */
+#define X_CLOCK 10
+#define Y_CLOCK 120
+
+#define X_ACTIVE_ALARM 5
+#define Y_ACTIVE_ALARM 265
+
+#define X_REPEAT_ALARM 5
+#define Y_REPEAT_ALARM 205
 
 // used to know in which edit alarm mode we are
 enum AlarmEditState
