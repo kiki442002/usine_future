@@ -126,6 +126,8 @@ void loop()
     else
       anyrtttl::nonblocking::play();
   }
+  else
+    anyrtttl::nonblocking::stop();
 
   if (update_time)
   {
@@ -140,5 +142,5 @@ void loop()
     screen_updateTime();
     clock_update = false;
   }
-  ArduinoOTA.handle(); // OTA
+  ArduinoOTA.handle(); // MAJ OTA
 }
