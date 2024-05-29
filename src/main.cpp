@@ -12,7 +12,7 @@ DFRobot_UI ui(&screen, &touch);
 
 volatile tm time_clock;
 volatile AlarmEditState state = NO_EDIT;
-volatile bool alarm_ring = false;
+volatile bool alarm_ring = true;
 // TODO: généraliser pour 5 alarmes
 volatile AlarmClock alarm_clock[MAX_ALARM]; // 5 alarmes possibles, seul la première utilisé pour l'instant
 
@@ -24,7 +24,7 @@ volatile bool clock_update = false;
 void setup()
 {
   WiFiManager wm;
-  wm.resetSettings();
+  //wm.resetSettings();
   bool res;
 
   Serial.begin(115200);
@@ -39,7 +39,7 @@ void setup()
     Serial.print(".");
   }
   Serial.println();
-  Serial.println("Wifi connecter");
+  Serial.println("Wifi connected");
 
   /*MAJ OTA*/
   ArduinoOTA.setHostname("clock"); // upload with clock.local
@@ -113,15 +113,20 @@ void setup()
   Serial.println("Setup NTP Fini");
 
   // corriger le fichier: anyrtttl.cpp avec DelayFuncPtr _delay = (void (*)(long unsigned int))(&delay);
-  anyrtttl::nonblocking::begin(BUZZER_OUT, tetris_melody_alarm);
+  ledcAttachPin(BUZZER_OUT, 0);
 }
+  
 
 void loop()
 {
-
+  Serial.println("loop beginned");
   if (alarm_ring)
   {
     Serial.println("Réveil Sonne");
+    if(!anyrtttl::nonblocking::isPlaying())
+    {
+      anyrtttl::nonblocking::begin(BUZZER_OUT, tetris_melody_alarm);
+    } 
     anyrtttl::nonblocking::play();
   }
   else

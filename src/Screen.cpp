@@ -49,23 +49,32 @@ const unsigned char alarm_active_icon[] PROGMEM = {
 
 void screen_init()
 {
-    ui.begin();
-    ui.setTheme(DFRobot_UI::MODERN);
+   // ui.begin();
+    //ui.setTheme(DFRobot_UI::MODERN);
 
     screen.begin();
-    screen.fillScreen(0x0000);
+    screen.fillScreen(COLOR_RGB565_BLACK);
     screen.setFont(&FreeMonoBold12pt7b);
+    screen.setRotation(1);
+    screen.setTextSize(1);
+    screen.setCursor(20, 100);
+    screen.println((tm *)&time_clock, "%A, %B %d %Y");
     screen.setTextSize(3);
+    screen.print( (tm *)&time_clock,"\n%H:%M:%S");
     screen.setTextColor(COLOR_RGB565_WHITE);
 }
 
 void screen_updateTime()
 {
-    screen.fillScreen(0x0000);
-    screen.setCursor(X_CLOCK, Y_CLOCK);
-    screen.print((tm *)&time_clock, "%A, %B %d %Y \n %H:%M:%S");
-    screen_active_alarm_icon(alarm_clock[0].active);
-    screen_repeat_alarm_icon(alarm_clock[0].repeat);
+    screen.fillScreen(COLOR_RGB565_BLACK);
+    screen.setTextSize(1);
+    screen.setCursor(20, 100);
+    screen.println((tm *)&time_clock, "%A, %B %d %Y");
+    screen.setTextSize(3);
+    screen.print( (tm *)&time_clock,"\n%H:%M:%S");
+   
+    //screen_active_alarm_icon(alarm_clock[0].active);
+    //screen_repeat_alarm_icon(alarm_clock[0].repeat);
 }
 
 void screen_repeat_alarm_icon(bool set)
