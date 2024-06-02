@@ -33,8 +33,8 @@ void setup()
   Serial.begin(115200);
   Serial.println("Début programme");
 
-  pinMode(TFT_BL,OUTPUT);
-  digitalWrite(TFT_BL,HIGH);
+  pinMode(TFT_BL, OUTPUT);
+  digitalWrite(TFT_BL, HIGH);
 
   /*Initialisation du wifi*/
   WiFi.mode(WIFI_STA);

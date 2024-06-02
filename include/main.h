@@ -52,8 +52,8 @@ struct AlarmClock
 {
     unsigned short hours = 12;
     unsigned short minutes = 30;
-    bool active = true;
-    bool repeat = true;
+    bool active = false;
+    bool repeat = false;
 };
 
 /* Global variables */
