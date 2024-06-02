@@ -13,6 +13,7 @@
 #define TFT_DC D2
 #define TFT_CS D6
 #define TFT_RST D3
+#define TFT_BL D13
 
 /* Pin definition for rotating encoder */
 #define CLK_ROTATIF D9  // clock event trigger when rotation made
@@ -23,7 +24,7 @@
 #define SW_SNOOZE D10
 
 /* Pin definition for buzzer button */
-#define BUZZER_OUT D13
+#define BUZZER_OUT D11
 
 /* Number max of alarm */
 #define MAX_ALARM 5
@@ -51,8 +52,8 @@ struct AlarmClock
 {
     unsigned short hours = 12;
     unsigned short minutes = 30;
-    bool active = false;
-    bool repeat = false;
+    bool active = true;
+    bool repeat = true;
 };
 
 /* Global variables */
@@ -60,6 +61,8 @@ extern volatile tm time_clock;
 extern volatile bool alarm_ring;
 extern volatile bool update_time;
 extern volatile bool clock_update;
+extern volatile bool init_home_screen_needed;
+extern volatile bool edit_screen_update;
 extern volatile AlarmClock alarm_clock[MAX_ALARM]; // 5 alarmes possibles
 
 extern volatile AlarmEditState state;

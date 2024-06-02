@@ -6,6 +6,7 @@ void IRAM_ATTR Timer_Clock_IT(void)
     time_clock.tm_sec++;
     if (time_clock.tm_sec == 60)
     {
+        clock_update = true;
         time_clock.tm_sec = 0;
         time_clock.tm_min++;
         if (time_clock.tm_min == 60)
@@ -59,51 +60,58 @@ void IRAM_ATTR Timer_Clock_IT(void)
     {
         update_time = true;
     }
-
-    /* Vérification des alarmes */
-    for (int i = 0; i < MAX_ALARM; i++)
-    {
-        if (alarm_clock[i].active)
+    if(NO_EDIT == state) {
+        /* Vérification des alarmes */
+        for (int i = 0; i < MAX_ALARM; i++)
         {
-            if (alarm_clock[i].hours == time_clock.tm_hour && alarm_clock[i].minutes == time_clock.tm_min && time_clock.tm_sec == 0)
+            if (alarm_clock[i].active)
             {
-                alarm_ring = true;
-                if (!alarm_clock[i].repeat)
+                if (alarm_clock[i].hours == time_clock.tm_hour &&
+                    alarm_clock[i].minutes == time_clock.tm_min &&
+                    time_clock.tm_sec == 0)
                 {
-                    alarm_clock[i].active = false;
+                    alarm_ring = true;
+                    if (!alarm_clock[i].repeat)
+                    {
+                        alarm_clock[i].active = false;
+                    }
                 }
             }
         }
     }
-    clock_update = true;
 }
 
 void IRAM_ATTR rotatingInterrupt()
-{ // Interrupt processing function
-    if (digitalRead(CLK_ROTATIF) != digitalRead(DATA_ROTATIF))
-    { // Signale que A change avant B - la rotation est donc horaire
-        switch (state)
-        {
-        case HOUR_EDIT:
-            alarm_clock[0].hours = (alarm_clock[0].hours + 1) % 24;
-            break;
-        case MINUTE_EDIT:
-            alarm_clock[0].minutes = (alarm_clock[0].minutes + 1) % 60;
-            break;
+{
+    // Interrupt processing function
+    if(NO_EDIT != state) {
+        if (digitalRead(CLK_ROTATIF) != digitalRead(DATA_ROTATIF))
+        { // if A change before B, clockwise rotation
+            switch (state)
+            {
+                case HOUR_EDIT:
+                    alarm_clock[0].hours = (alarm_clock[0].hours + 1) % 24;
+                    break;
+                case MINUTE_EDIT:
+                    alarm_clock[0].minutes = (alarm_clock[0].minutes + 1) % 60;
+                    break;
+            }
         }
-    }
-    else
-    {
-        // Sinon, c'est que B change avant A, la rotation est anti-horaire
-        switch (state)
+        else
         {
-        case HOUR_EDIT:
-            alarm_clock[0].hours = (alarm_clock[0].hours - 1) % 24;
-            break;
-        case MINUTE_EDIT:
-            alarm_clock[0].minutes = (alarm_clock[0].minutes - 1) % 60;
+            // if B change before A, rotation is anticlockwise
+            switch (state)
+            {
+                case HOUR_EDIT:
+                    alarm_clock[0].hours = (1 == alarm_clock[0].hours) ? 24 : alarm_clock[0].hours - 1;
+                    break;
+                case MINUTE_EDIT:
+                    alarm_clock[0].minutes = ((unsigned short)-1 == alarm_clock[0].minutes) ? 59 : alarm_clock[0].minutes - 1;
+            }
         }
-    }
+        alarm_clock[0].active = true; // user just edited the clock to use it
+        edit_screen_update = true;
+    }    
 }
 
 void IRAM_ATTR changeEditState()
@@ -112,15 +120,18 @@ void IRAM_ATTR changeEditState()
     // state = (AlarmEditState)(((int)state) + 1) % (((int)MINUTE_EDIT) + 1);
     switch (state)
     {
-    case NO_EDIT:
-        state = HOUR_EDIT;
-        break;
-    case HOUR_EDIT:
-        state = MINUTE_EDIT;
-        break;
-    case MINUTE_EDIT:
-        state = NO_EDIT;
-        break;
+        case NO_EDIT:
+            state = HOUR_EDIT;
+            edit_screen_update = true;
+            break;
+        case HOUR_EDIT:
+            state = MINUTE_EDIT;
+            edit_screen_update = true;
+            break;
+        case MINUTE_EDIT:
+            state = NO_EDIT;
+            init_home_screen_needed = true;
+            break;
     }
 }
 
@@ -129,16 +140,19 @@ void IRAM_ATTR snoozeInterrupt(void)
     if (NO_EDIT == state)
     { // the snooze action either interrupt the ringing alarm or enable/disable programmed alarm
         if (alarm_ring)
-        {                       // alarm is ringing, stop it
-            alarm_ring = false; // stop alarm
+        { // alarm is ringing, stop it
+            alarm_ring = false;
+            alarm_clock[0].active = alarm_clock[0].repeat; // stay on if reapat mode, else go back to no activity         
         }
         else
-        { // alarm is not ringing, enable / desable programmed alarm is asked
+        { // alarm is not ringing, enable / disable programmed alarm is asked
             alarm_clock[0].active = !alarm_clock[0].active;
         }
+        init_home_screen_needed = true;
     }
     else
     { // edition of alarm params, action is to set or not set repeat mode
         alarm_clock[0].repeat = !alarm_clock[0].repeat;
+        edit_screen_update = true;
     }
 }

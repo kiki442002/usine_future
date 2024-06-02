@@ -53,6 +53,10 @@ void screen_init()
     //ui.setTheme(DFRobot_UI::MODERN);
 
     screen.begin();
+    screen_display_hour();
+}
+
+void screen_display_hour() {
     screen.fillScreen(COLOR_RGB565_BLACK);
     screen.setFont(&FreeMonoBold12pt7b);
     screen.setRotation(1);
@@ -62,6 +66,9 @@ void screen_init()
     screen.setTextSize(3);
     screen.print( (tm *)&time_clock,"\n%H:%M:%S");
     screen.setTextColor(COLOR_RGB565_WHITE);
+
+    screen_active_alarm_icon(alarm_clock[0].active);
+    screen_repeat_alarm_icon(alarm_clock[0].repeat);
 }
 
 void screen_updateTime()
@@ -73,24 +80,24 @@ void screen_updateTime()
     screen.setTextSize(3);
     screen.print( (tm *)&time_clock,"\n%H:%M:%S");
    
-    //screen_active_alarm_icon(alarm_clock[0].active);
-    //screen_repeat_alarm_icon(alarm_clock[0].repeat);
+    screen_active_alarm_icon(alarm_clock[0].active);
+    screen_repeat_alarm_icon(alarm_clock[0].repeat);
 }
 
 void screen_repeat_alarm_icon(bool set)
 {
     if (set)
-        screen.drawXBitmap(X_REPEAT_ALARM, Y_REPEAT_ALARM, alarm_repeat_icon, 50, 50, 0x000);
+        screen.drawXBitmap(X_REPEAT_ALARM, Y_REPEAT_ALARM, alarm_repeat_icon, 50, 50, COLOR_RGB565_WHITE);
 
     else
-        screen.fillRect(X_REPEAT_ALARM, Y_REPEAT_ALARM, 50, 50, 0x0000);
+        screen.fillRect(X_REPEAT_ALARM, Y_REPEAT_ALARM, 50, 50, COLOR_RGB565_BLACK);
 }
 void screen_active_alarm_icon(bool set)
 {
     if (set)
-        screen.drawXBitmap(X_REPEAT_ALARM, Y_REPEAT_ALARM, alarm_active_icon, 50, 50, 0X000);
+        screen.drawXBitmap(X_REPEAT_ALARM, Y_REPEAT_ALARM, alarm_active_icon, 50, 50, COLOR_RGB565_WHITE);
     else
-        screen.fillRect(X_ACTIVE_ALARM, Y_ACTIVE_ALARM, 50, 50, 0x0000);
+        screen.fillRect(X_ACTIVE_ALARM, Y_ACTIVE_ALARM, 50, 50, COLOR_RGB565_BLACK);
 }
 
 void screen_edit_alarm()
@@ -98,29 +105,26 @@ void screen_edit_alarm()
     screen.fillScreen(COLOR_RGB565_BLACK);
     screen.setFont(&FreeMonoBold12pt7b);
     screen.setTextSize(2);
-    screen.setTextColor(COLOR_RGB565_WHITE);
+    screen.setTextColor(COLOR_RGB565_DGRAY);
 
     // print mode
-    screen.setCursor(10, 30);
+    screen.setCursor(30, 50);
     screen.print("EDIT MODE");
 
     // print alarm date
     screen.setCursor(150, 130);
     screen.setTextSize(3);
     if(HOUR_EDIT == state) {
-        screen.setTextColor(COLOR_RGB565_YELLOW);
+        screen.setTextColor(COLOR_RGB565_WHITE);
     }
     screen.print((unsigned long)alarm_clock[0].hours, 10);
-    screen.setTextColor(COLOR_RGB565_WHITE);
+    screen.setTextColor(COLOR_RGB565_DGRAY);
     screen.print(':');
     if(MINUTE_EDIT == state) {
-        screen.setTextColor(COLOR_RGB565_YELLOW);
+        screen.setTextColor(COLOR_RGB565_WHITE);
     }
     screen.print((unsigned long)alarm_clock[0].minutes, 10);
-    screen.setTextColor(COLOR_RGB565_WHITE);
 
-    // print repeat icon
-    if(alarm_clock[0].repeat) {
-        screen_repeat_alarm_icon(true);
-    }
+    // print repeat icon if needed
+    screen_repeat_alarm_icon(alarm_clock[0].repeat);
 }
